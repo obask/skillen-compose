@@ -12,11 +12,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
+import androidx.compose.ui.unit.sp
 
 @Composable
 fun StudyTextArea(caption: String, textContent: String) {
     var showDialog by remember { mutableStateOf(false) }
-    var text1 by remember { mutableStateOf(caption) }
+    var text1 by remember { mutableStateOf("TEXT:$caption") }
 
     if (showDialog) {
         // Alert dialog is shown when showDialog is true
@@ -45,14 +46,36 @@ fun StudyTextArea(caption: String, textContent: String) {
 
     val text2 = tokenizeFrenchText(textContent)
 
+    var pos = 0
+    val text3: List<Pair<SomeThing, Pair<Int, String?>>> = text2.map { tokenOrText ->
+        when (tokenOrText) {
+            is RawText -> {
+                pos += tokenOrText.value.length
+                tokenOrText to (pos to "")
+            }
+
+            is Token -> {
+                val translation = dictionary[tokenOrText.token]?.takeIf { it.second > 42 }?.let { " (${it.first})" }
+                pos += tokenOrText.original.length + (translation?.length ?: 0)
+                tokenOrText to (pos to translation)
+            }
+        }
+    }
+
     val annotatedString = buildAnnotatedString {
-        for (t in text2) {
+        pushStyle(SpanStyle(fontSize = 20.sp))
+        for ((t, info) in text3) {
             when (t) {
-                is Text -> append(t.value)
+                is RawText -> append(t.value)
                 is Token -> {
-                    pushStyle(SpanStyle(color = Color.Blue))
-                    append(t.original)
-                    pop()
+                    if (info.second?.isNotBlank() == true) {
+                        append(t.original)
+                        pushStyle(SpanStyle(color = Color(0, 100, 0)))
+                        append(info.second)
+                        pop()
+                    } else {
+                        append(t.original)
+                    }
                 }
             }
         }
@@ -66,11 +89,13 @@ fun StudyTextArea(caption: String, textContent: String) {
         Text(text1)
     }
     Divider(Modifier)
-    Text("BEFORE")
-    ClickableText(annotatedString) { pos ->
-        text1 = "CLICK POSITION: $pos"
-        showDialog = true
+    ClickableText(annotatedString) { p ->
+        val selectedWord = text3.dropWhile { it.second.first < p }.first()
+//        val tr = dictionary[(selectedWord as? Token)?.token]?.first
+//        if (tr != "pitch") {
+            text1 = "TRANSLATION: ${selectedWord.first}"
+//        }
+//        showDialog = true
     }
     Divider()
-    Text("AFTER")
 }

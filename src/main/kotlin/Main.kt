@@ -28,7 +28,7 @@ fun App() {
     var text by remember { mutableStateOf("Hello, World!") }
     MaterialTheme(darkColors()) {
         Row(Modifier.fillMaxSize()) {
-            Column(Modifier.fillMaxHeight().width(150.dp).background(Color.Gray)) {
+            Column(Modifier.fillMaxHeight().width(120.dp).background(Color.Gray)) {
                 Button(onClick = {}, modifier = Modifier.height(50.dp).padding(2.dp)) {
                     Text("Section 1")
                 }
@@ -53,9 +53,18 @@ fun App() {
 
 val vocab = object {}.javaClass.classLoader.getResource("french_vocabulary.tsv")?.readText() ?: error("fail")
 
+var rank = 0
+val dictionary = vocab.lines().associate { line ->
+    rank += 1
+    val tmp = line.split('\t')
+    val frenchWord = tmp.first()
+    val translation = tmp[1]
+    val tok = tokenizeFrenchText(frenchWord).filterIsInstance<Token>().firstOrNull()?.token
+    tok to (translation to rank)
+}
 
 fun main() = application {
-    println(vocab.lines().first())
+    println(dictionary.entries.take(7))
     Window(onCloseRequest = ::exitApplication) {
         App()
     }

@@ -8,7 +8,7 @@ sealed interface SomeThing
 data class Token(val token: String, val original: String) : SomeThing
 
 @JvmInline
-value class Text(val value: String) : SomeThing
+value class RawText(val value: String) : SomeThing
 
 fun tokenizeFrenchText(text: String): MutableList<SomeThing> {
     val analyzer = FrenchAnalyzer()
@@ -22,12 +22,12 @@ fun tokenizeFrenchText(text: String): MutableList<SomeThing> {
     var previousPosition = 0
     while (tokenStream.incrementToken()) {
         if (offsetAttr.startOffset() != previousPosition) {
-            tokens += Text(text.substring(previousPosition, offsetAttr.startOffset()))
+            tokens += RawText(text.substring(previousPosition, offsetAttr.startOffset()))
         }
         tokens += Token(termAttr.toString(), text.substring(offsetAttr.startOffset(), offsetAttr.endOffset()))
         previousPosition = offsetAttr.endOffset()
     }
-    tokens += Text(text.substring(previousPosition, text.length))
+    tokens += RawText(text.substring(previousPosition, text.length))
 
     tokenStream.end()
     tokenStream.close()
