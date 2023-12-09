@@ -43,18 +43,19 @@ fun App() {
                 }
             }
             Column(Modifier.fillMaxHeight()) {
-                Button(onClick = {
-                    text = "Hello, Desktop!"
-                }) {
-                    Text(text)
-                }
+                val path = "Je m’appelle Jessica"
+                val tmp = object {}.javaClass.classLoader.getResource("texts/$path.txt")?.readText() ?: "Not Found"
+                StudyTextArea(path, tmp)
             }
         }
-
     }
 }
 
+val vocab = object {}.javaClass.classLoader.getResource("french_vocabulary.tsv")?.readText() ?: error("fail")
+
+
 fun main() = application {
+    println(vocab.lines().first())
     Window(onCloseRequest = ::exitApplication) {
         App()
     }
