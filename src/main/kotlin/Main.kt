@@ -30,16 +30,16 @@ fun App() {
         Row(Modifier.fillMaxSize()) {
             Column(Modifier.fillMaxHeight().width(120.dp).background(Color.Gray)) {
                 Button(onClick = {}, modifier = Modifier.height(50.dp).padding(2.dp)) {
-                    Text("Section 1")
+                    Text("About")
                 }
                 Button(onClick = {}, modifier = Modifier.height(50.dp).padding(2.dp)) {
-                    Text("Section 2")
+                    Text("Add Text")
                 }
                 Button(onClick = {}, modifier = Modifier.height(50.dp).padding(2.dp)) {
-                    Text("Section 3")
+                    Text("My texts")
                 }
                 Button(onClick = {}, modifier = Modifier.height(50.dp).padding(2.dp)) {
-                    Text("Section 4")
+                    Text("My words")
                 }
             }
             Column(Modifier.fillMaxHeight()) {

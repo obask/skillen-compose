@@ -1,3 +1,4 @@
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.text.ClickableText
 import androidx.compose.material.AlertDialog
 import androidx.compose.material.Button
@@ -17,28 +18,27 @@ import androidx.compose.ui.unit.sp
 @Composable
 fun StudyTextArea(caption: String, textContent: String) {
     var showDialog by remember { mutableStateOf(false) }
-    var text1 by remember { mutableStateOf("TEXT:$caption") }
+    var text1 by remember { mutableStateOf("TEXT:$caption..............................") }
 
     if (showDialog) {
-        // Alert dialog is shown when showDialog is true
         AlertDialog(
             onDismissRequest = {
                 showDialog = false
             },
             title = {
-                Text("Alert Dialog")
+                Text("My Dialog")
             },
             text = {
-                Text("This is an example of an alert dialog.")
+                Text("This is a modal window, which contains some very useful information")
             },
             confirmButton = {
                 Button(onClick = { showDialog = false }) {
-                    Text("OK")
+                    Text("Another Close")
                 }
             },
             dismissButton = {
                 Button(onClick = { showDialog = false }) {
-                    Text("Cancel")
+                    Text("Close")
                 }
             }
         )
@@ -83,9 +83,13 @@ fun StudyTextArea(caption: String, textContent: String) {
 
         toAnnotatedString()
     }
+    Text("*(I don't have a good dictionary, so it shows a token you've clicked on)")
     Button(onClick = {
-        text1 = "Hello, Desktop!"
-    }) {
+        text1 = "Hello, Compose for Desktop!"
+        showDialog = true
+    },
+        Modifier.fillMaxWidth()
+    ) {
         Text(text1)
     }
     Divider(Modifier)
